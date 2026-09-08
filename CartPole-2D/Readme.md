@@ -1,7 +1,7 @@
 # Cart Poleのモデリング
 
 1. [Newton-Euler法](./notes/cartpole_2d_newton_euler.ipynb)
-2. Lagrange法
+2. [Lagrange法](./notes/cartpole_2d_lagrange.ipynb)
 
 
 参考文献
