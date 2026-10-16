@@ -39,13 +39,13 @@ $$
 <img src="./images/BodyCorrdnation_WorldCorrdination.png" style="width:90%;"/>
 </p>
 
-世界座標の姿勢 $\Sigma_0$ がある変換行列に $R$ によって、$^0R_1$ になったと考えることが出来る。
+世界座標の姿勢 $\Sigma_0$ がある変換行列に $R$ によって、 $^0R_1$ になったと考えることが出来る。
 
 $$
 ^0R_1 = R \ \Sigma_0
 $$
 
-$\Sigma_0$ は単位行列であるため、$R={^0}R_0$ となり、変換行列自体が姿勢を示す回転行列でもある。
+$\Sigma_0$ は単位行列であるため、 $R={^0}R_0$ となり、変換行列自体が姿勢を示す回転行列でもある。
 
 ### 1.1. 各座標を基準軸とした回転行列
 
@@ -53,7 +53,7 @@ $\Sigma_0$ は単位行列であるため、$R={^0}R_0$ となり、変換行列
 
 #### 1.1.1. $x$軸回転
 
-$x$ 軸で回転させることにより、$x_0=x_1$ であり、$y_1,z_1$ が $y_0, z_0$ から変化する。
+$x$ 軸で回転させることにより、 $x_0=x_1$ であり、 $y_1,z_1$ が $y_0, z_0$ から変化する。
 
 <p align="center">
 <img src="./images/x_axis_rotation.png" style="width:90%;"/>
@@ -62,7 +62,7 @@ $x$ 軸で回転させることにより、$x_0=x_1$ であり、$y_1,z_1$ が $
 - $y_1$ は $y_0 - z_0$ 平面で示され、 $(\cos(\phi), \sin(\phi))$
 - $z_1 $は $y_0 - z_0$ 平面で示され、 $(-\sin(\phi), \cos(\phi))$
 
-これより、$x$ 軸周りの回転行列 $E_x(\phi)$ は以下となる。
+これより、 $x$ 軸周りの回転行列 $E_x(\phi)$ は以下となる。
 
 $$
 E_x(\phi) = \begin{bmatrix}
@@ -80,10 +80,10 @@ $y$ 軸で回転させることにより、 $y_0=y_1$ であり、 $x_1,z_1$ が
 <img src="./images/y_axis_rotation.png" style="width:90%;"/>
 </p>
 
-- $x_1$ は $x_0 - z_0$ 平面で示され、$( \cos(\theta), -\sin(\theta) )$
-- $z_1 $は $x_0 - z_0$ 平面で示され、$( \sin(\theta), \cos(\theta) )$
+- $x_1$ は $x_0 - z_0$ 平面で示され、 $( \cos(\theta), -\sin(\theta) )$
+- $z_1 $は $x_0 - z_0$ 平面で示され、 $( \sin(\theta), \cos(\theta) )$
 
-これより、$y$ 軸周りの回転行列 $E_y(\theta)$ は以下となる。
+これより、 $y$ 軸周りの回転行列 $E_y(\theta)$ は以下となる。
 
 $$
 E_y(\theta) = \begin{bmatrix}
@@ -95,16 +95,16 @@ $$
 
 #### 1.1.3. $z$軸回転
 
-$z$ 軸で回転させることにより、 $z_0=z_1$ であり、$x_1,y_1$ が $x_0, y_0$ から変化する。
+$z$ 軸で回転させることにより、 $z_0=z_1$ であり、 $x_1,y_1$ が $x_0, y_0$ から変化する。
 
 <p align="center">
 <img src="./images/z_axis_rotation.png" style="width:90%;"/>
 </p>
 
-- $x_1$ は $x_0 - y_0$ 平面で示され、$( \cos(\theta), \sin(\theta) )$
-- $y_1$ は $x_0 - y_0$ 平面で示され、$( -\sin(\theta), \cos(\theta) )$
+- $x_1$ は $x_0 - y_0$ 平面で示され、 $( \cos(\theta), \sin(\theta) )$
+- $y_1$ は $x_0 - y_0$ 平面で示され、 $( -\sin(\theta), \cos(\theta) )$
 
-これより、$z$ 軸周りの回転行列 $E_z(\psi)$ は以下となる。
+これより、 $z$ 軸周りの回転行列 $E_z(\psi)$ は以下となる。
 
 $$
 E_z(\psi) = \begin{bmatrix}
