@@ -11,6 +11,20 @@
 2. Lagrange法
 3. 拘束条件を用いたマルチボディダイナミクス
 4. Kane法
-5. Featherstoneの空間ベクトル法
+5. [Featherstoneの空間ベクトル法](./ABA/Basic/ReadMe.md)
    - Recursive Newton–Euler Algorithm（RNEA）
    - Articulated-Body Algorithm（ABA）
+
+
+予定
+
+1. CRBA : 質量行列の再帰計算
+2. Floating Base : 6自由度ベースの動力学
+3. Contact Dynamics : 拘束力・接触ヤコビアン
+
+他 repositoryで , WBC
+1. Inverse Dynamics QP
+2. タスク優先度
+3. 接触力最適化
+4. 摩擦円錐
+5. 制御法
