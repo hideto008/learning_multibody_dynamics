@@ -28,32 +28,31 @@ class Forward_Pass():
 
         self.net_forces = np.zeros((number_of_link, 6))      
 
+    # 再帰的計算でSpatial Velocity, Accelerationを求め、各リンク単体のNet Spatial Forceを計算する
     def process(self, 
-                angles:npt.ArrayLike, omegas:npt.ArrayLike, alphas:npt.ArrayLike,
+                omegas:npt.ArrayLike, alphas:npt.ArrayLike,
                 tranform_matrices:npt.ArrayLike, sbms:npt.ArrayLike, sp_Is:npt.ArrayLike):
-        assert len(angles) == self.number_of_link
         assert len(omegas) == self.number_of_link
         assert len(alphas) == self.number_of_link
         assert len(tranform_matrices) == self.number_of_link
         assert len(sbms) == self.number_of_link
         assert len(sp_Is) == self.number_of_link
 
-        for i in range(self.number_of_link+1):
-            angle = angles[i]
+        vel = self.initial_vel
+        acc = self.initial_acc
+
+        for i in range(self.number_of_link):
+            # Compute child link velocity , acceleration and net spatial force
             omega = omegas[i]
             alpha = alphas[i]
-            if i == 0:
-                # Base link
-                vel = self.initial_vel
-                acc = self.initial_acc
-            else:
-                # Compute child link velocity and acceleration
-                sbm = sbms[i-1]
-                transform_mat = tranform_matrices[i-1]
-                vel = recursion_spatial_velocity(transform_mat, vel, sbm, omega)
-                acc = recursion_spatial_acceleration(transform_mat, acc, vel, sbm, alpha, omega)
-                sp_I = sp_Is[i-1]
-                self.net_forces[i-1] = sv.calculete_net_spatial_newton_euler_spatial_force(sp_I, acc, vel)
+            sbm = sbms[i]
+            sp_I = sp_Is[i]
+            transform_mat = tranform_matrices[i]
+            vel = recursion_spatial_velocity(transform_mat, vel, sbm, omega)
+            acc = recursion_spatial_acceleration(transform_mat, acc, vel, sbm, alpha, omega)
+            self.net_forces[i] = sv.calculete_net_spatial_newton_euler_spatial_force(sp_I, acc, vel)
+
+        return self.net_forces
 
 # 固定ベース
 class Backward_Pass():
@@ -61,18 +60,20 @@ class Backward_Pass():
     def __init__(self, number_of_link:int):
         self.number_of_link = number_of_link
 
-    def process(self, tranform_matrices:npt.ArrayLike, smbs:npt.ArrayLike, sp_net_forces:npt.ArrayLike):
+    # 再帰的に親リンクのトルクを計算する
+    def process(self, tranform_matrices:npt.ArrayLike, sbms:npt.ArrayLike, sp_net_forces:npt.ArrayLike):
         assert len(tranform_matrices) == self.number_of_link
-        assert len(smbs) == self.number_of_link
+        assert len(sbms) == self.number_of_link
         assert len(sp_net_forces) == self.number_of_link
 
         forces = np.array(sp_net_forces, copy=True)
         torques = np.zeros(self.number_of_link)
 
+        # Compute parent link torques recursively
         for i in reversed(range(self.number_of_link)):
-            torques[i] = smbs[i] @ forces[i]
+            torques[i] = sbms[i] @ forces[i]
 
             if i > 0:
-                forces[i-1] += tranform_matrices[i-1].T @ forces[i]
+                forces[i-1] += tranform_matrices[i].T @ forces[i]
 
         return torques
