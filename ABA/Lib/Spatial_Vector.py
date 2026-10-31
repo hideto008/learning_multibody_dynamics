@@ -101,7 +101,7 @@ def spatial_motion_cross_matrix(sp_velocity):
     ])
 
 def spatial_force_cross_matrix(sp_velocity):
-    return spatial_motion_cross_matrix(sp_velocity).T
+    return -spatial_motion_cross_matrix(sp_velocity).T
 
 
 def get_spatial_motion_transform_matrix(rot_mat:npt.ArrayLike, r_op:npt.ArrayLike):
@@ -126,7 +126,7 @@ def get_spatial_inertia(Ig:np.array, m:float, r_og:np.array):
 
     r = get_skew_matrix(r_og)
 
-    return (np.array([
+    return (np.block([
         [Ig - m * r @ r, m * r],
         [-m * r , m * np.eye(3)]
     ])

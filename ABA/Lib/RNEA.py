@@ -15,14 +15,16 @@ def recursion_spatial_acceleration(transform_mat:npt.ArrayLike, sp_acc:npt.Array
 
 # 親リンクのSpatial Forceの計算 (backward pass)
 def recursion_spatial_force(sp_net_force:npt.ArrayLike, transform_mat:npt.ArrayLike, sp_force:npt.ArrayLike):
-    parent_force = sp_net_force + transform_mat@sp_force
+    parent_force = sp_net_force + transform_mat.T@sp_force
     return parent_force
 
 # 固定ベースとする
 class Forward_Pass():
 
-    def __init__(self,number_of_link:int):
+    def __init__(self,number_of_link:int, initial_vel:npt.ArrayLike, initial_acc:npt.ArrayLike):
         self.number_of_link = number_of_link
+        self.initial_vel = initial_vel
+        self.initial_acc = initial_acc
 
         self.net_forces = np.zeros((number_of_link, 6))      
 
@@ -36,39 +38,41 @@ class Forward_Pass():
         assert len(sbms) == self.number_of_link
         assert len(sp_Is) == self.number_of_link
 
-        for i in range(self.number_of_link):
+        for i in range(self.number_of_link+1):
             angle = angles[i]
             omega = omegas[i]
             alpha = alphas[i]
             if i == 0:
                 # Base link
-                vel = np.zeros(6)
-                acc = np.zeros(6)
+                vel = self.initial_vel
+                acc = self.initial_acc
             else:
                 # Compute child link velocity and acceleration
-                sbm = sbms[i]
-                transform_mat = tranform_matrices[i]
+                sbm = sbms[i-1]
+                transform_mat = tranform_matrices[i-1]
                 vel = recursion_spatial_velocity(transform_mat, vel, sbm, omega)
                 acc = recursion_spatial_acceleration(transform_mat, acc, vel, sbm, alpha, omega)
-                sp_I = sp_Is[i]
-                self.net_forces[i] = sv.calculete_net_spatial_newton_euler_spatial_force(sp_I, acc, vel)
+                sp_I = sp_Is[i-1]
+                self.net_forces[i-1] = sv.calculete_net_spatial_newton_euler_spatial_force(sp_I, acc, vel)
 
+# 固定ベース
 class Backward_Pass():
 
     def __init__(self, number_of_link:int):
         self.number_of_link = number_of_link
-        self.net_forces = np.zeros((number_of_link, 6))
 
-    def process(self, tranform_matrices:npt.ArrayLike, sp_forces:npt.ArrayLike):
+    def process(self, tranform_matrices:npt.ArrayLike, smbs:npt.ArrayLike, sp_net_forces:npt.ArrayLike):
         assert len(tranform_matrices) == self.number_of_link
-        assert len(sp_forces) == self.number_of_link
+        assert len(smbs) == self.number_of_link
+        assert len(sp_net_forces) == self.number_of_link
+
+        forces = np.array(sp_net_forces, copy=True)
+        torques = np.zeros(self.number_of_link)
 
         for i in reversed(range(self.number_of_link)):
-            sp_force = sp_forces[i]
-            transform_mat = tranform_matrices[i]
-            if i == self.number_of_link - 1:
-                # End link
-                parent_force = self.net_forces[i]
-            else:
-                parent_force = recursion_spatial_force(self.net_forces[i], transform_mat, sp_force)
-            self.net_forces[i-1] = parent_force if i > 0 else self.net_forces[i-1]
+            torques[i] = smbs[i] @ forces[i]
+
+            if i > 0:
+                forces[i-1] += tranform_matrices[i-1].T @ forces[i]
+
+        return torques
