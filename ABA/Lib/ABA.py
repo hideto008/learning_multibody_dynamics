@@ -17,7 +17,7 @@ class ABA:
         self.c = np.zeros((number_of_links, 6)) # Spatial Accelertionの速度依存項
         self.p_a = np.zeros((number_of_links, 6)) # バイアス力
         self.I_a = np.zeros((number_of_links, 6, 6)) # ABI
-        self.d = np.zeros((number_of_links)) # ABIの逆行列の対角要素
+        self.d = np.zeros((number_of_links)) # 関節空間に射影したABI
         self.u = np.zeros((number_of_links)) # ABIに作用する投影力
         self.U = np.zeros((number_of_links, 6)) # ABIに作用する投影力の行列
 
@@ -29,7 +29,7 @@ class ABA:
             # ここで各リンクの前進パスの計算を行う
 
             sp_vel = transform_mats[i] @ sp_vel + self.sbms[i] * omegas[i]
-            self.c[i] = sv.spatial_motion_cross_matrix(sp_vel) @ self.sbms[i] * omegas[i]
+            self.c[i] = sv.spatial_motion_cross_matrix(sp_vel) @ (self.sbms[i] * omegas[i])
             self.p_a[i] = sv.spatial_force_cross_matrix(sp_vel) @ self.sp_Is[i] @ sp_vel
             self.I_a[i] = self.sp_Is[i]
 
