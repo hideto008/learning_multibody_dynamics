@@ -1,7 +1,7 @@
 import numpy as np
 import numpy.typing as npt
 
-import Spatial_Vector as sv
+import Lib.Spatial_Vector as sv
 
 # 子リンクのSpatial Velocityの計算 (forward pass)
 def recursion_spatial_velocity(transform_mat:npt.ArrayLike, sp_vel:npt.ArrayLike, sbm:npt.ArrayLike, dq:float):
