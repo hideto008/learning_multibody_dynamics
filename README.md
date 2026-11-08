@@ -15,10 +15,13 @@
    - Recursive Newton–Euler Algorithm（RNEA）
    - Articulated-Body Algorithm（ABA）
 
+## 関連手法
+
+1. [CRBA](./CRBA/basic/CRBA.ipynb) : 質量行列の再帰計算
+
 
 予定
 
-1. CRBA : 質量行列の再帰計算
 2. Floating Base : 6自由度ベースの動力学
 3. Contact Dynamics : 拘束力・接触ヤコビアン
 
